@@ -1,6 +1,6 @@
+const ENTITY_TYPES = require('./entity_types')
 
-
-module.exports=  function() {
+module.exports =  function() {
     const self = this
     self.started = false
     self.start
@@ -38,19 +38,25 @@ module.exports=  function() {
 
     self.update = function(dt) {
         for (var key in self.Entities) {
-            self.Entities[key].lastPos.x = self.Entities[key].pos.x
-            self.Entities[key].lastPos.y = self.Entities[key].pos.y 
-            self.Entities[key].pos.x += self.Entities[key].velocity.x * dt
-            self.Entities[key].pos.y += self.Entities[key].velocity.y * dt
 
-            //clamp
-            if (self.Entities[key].pos.x > self.world.width || self.Entities[key].pos.x < 0) {
-                
-                self.Entities[key].velocity.x *= -1;
-            } 
-            if (self.Entities[key].pos.y > self.world.height || self.Entities[key].pos.y < 0) {
-               
-                self.Entities[key].velocity.y *= -1;
+            switch(self.Entities[key].type) {
+                case ENTITY_TYPES.BOX:
+                    self.Entities[key].lastPos.x = self.Entities[key].pos.x
+                    self.Entities[key].lastPos.y = self.Entities[key].pos.y 
+                    self.Entities[key].pos.x += self.Entities[key].velocity.x * dt
+                    self.Entities[key].pos.y += self.Entities[key].velocity.y * dt
+        
+                    //clamp
+                    if (self.Entities[key].pos.x > self.world.width || self.Entities[key].pos.x < 0) {
+                        
+                        self.Entities[key].velocity.x *= -1;
+                    } 
+                    if (self.Entities[key].pos.y > self.world.height || self.Entities[key].pos.y < 0) {
+                       
+                        self.Entities[key].velocity.y *= -1;
+                    }
+
+                break;
             }
         }
     }

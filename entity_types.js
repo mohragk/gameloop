@@ -4,3 +4,5 @@ const ENTITY_TYPES = {
         UI: 1,
         TREE: 1
 };
+
+module.exports = ENTITY_TYPES

@@ -43,7 +43,7 @@ io.on('connection', function(socket) {
     })
 
     socket.on('register player', (player) => {
-        engine.registerEntity(player.pos, player.velocity, player.id)
+        engine.registerEntity(player.pos, player.velocity, player.id, player.type)
     })
 
     socket.on('delete entity', (entity_id) => {
