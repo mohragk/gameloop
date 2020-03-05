@@ -8,6 +8,17 @@
     cursor: pointer;
 }
 
+.circle {
+    background-color: blue;
+    height: 50px;
+    width: 50px;
+    border-radius: 25px;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    cursor: pointer;
+}
+
 #startStop {
     cursor: pointer;
     position: fixed;

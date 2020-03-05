@@ -8,25 +8,47 @@ function uuidv4() {
 
 $(function() {
     const socket = io();
-    var entityCount = 0
-    var unique_id = 0
+    var entityCount = 0;
     var entities = {}
+    const renderables = {}
+    var selectedType = ENTITY_TYPES.BOX
 
-    const boxes = {}
 
-    $('#canvas').click(e => {
-        e.preventDefault()
-        createEntity({
-            x:e.clientX,
-            y:e.clientY
+    //init
+    createUI()
+
+
+    // resized window
+    $( window ).resize(function() {
+        console.log('Window size changed: ',{width:$(window).width()})
+        socket.emit('resize world', {
+            width: $(window).width(), 
+            height: $(window).height()
         })
     })
-    createAndAddBox = function(id) {
-        
+
+    // make canvas clickable and create Box at mousePos
+    $('#canvas').click(e => {
+        e.preventDefault()
+        createEntity(
+        { //pos
+            x:e.clientX,
+            y:e.clientY
+        },
+        { //size
+            w: 50, h: 50
+        },
+        // type
+        selectedType
+        )
+    })
+
+
+    createAndAddRenderable = function(id, type) {
         return $('<div>')
-        .attr('class', 'box')
+        .attr('class', ENTITY_TYPES.classNames[type])
         .attr('id', id)
-        .appendTo('body')
+        .appendTo('#canvas')
         .click((e) => {
             removeEntity(e.target.id)
         })
@@ -39,7 +61,7 @@ $(function() {
     const debugField = $('<div>')
         .attr('id', 'debug-field')
         .css({position: 'absolute', top:0, left:0})
-        .appendTo('body')
+        .appendTo('#canvas')
 
     socket.on('debug state', (state) => {
         debugField.text(state.frameTime)
@@ -67,7 +89,7 @@ $(function() {
 
     function removeEntity(id) {
         socket.emit('delete entity', id)
-        delete boxes[id] 
+        delete renderables[id] 
         delete entities[id]
         const bx = $('div#'+id)
         bx.remove()
@@ -75,58 +97,67 @@ $(function() {
         printItems()
     }
 
-    function createEntity(position) {
+    function createEntity(pos, size, type) {
         const id = uuidv4();
         socket.emit('register player', {
-            pos:position,
+            id,
+            type,
+            pos,
+            size,
             velocity: {
                 x: Math.random()*100,
                 y: Math.random()*100,
             },
-            id,
-            type: ENTITY_TYPES.BOX
         })
-        boxes[id]= createAndAddBox(id)
+
+
+        renderables[id] = createAndAddRenderable(id, type)
 
         entityCount++
-        
+        printItems()
     }
 
     function printItems(){
         console.log(entities)
     }
 
-    function update(dt) {
-        predictPositions(dt)
-    }
+   
 
     function draw() {
         $.each(entities, (i, entity) => {
-            const bx = $('div#'+entity.id)
-            bx.css({
+            const { type } = entity;
+
+            const $entity = $('div#'+entity.id)
+            $entity.css({
                 left: entity.pos.x + 'px',
                 top: entity.pos.y + 'px'
             })
         })
     }
 
-    function predictPositions(dt) {
-        $.each(entities, (i, entity) => {
-            entity.pos.x += entity.velocity.x * dt
-            entity.pos.y += entity.velocity.y * dt
-        })
+    function createUI() {
+        const zIndex = 100000
+        const typeSelector = $('<select>')
+            .attr('id', 'selectType')
+            .css({
+                position: 'fixed',
+                top:10,
+                right: 10,
+                zIndex
+            })
+            
+            .append(
+                $('<option>').text('Box').val(ENTITY_TYPES.BOX),
+                $('<option>').text('Circle').val(ENTITY_TYPES.CIRCLE),
+            );
+        
+        $('#canvas').append(typeSelector);
+        
+        typeSelector.change( function() {
+            selectedType = parseInt( $(this).val() )
+            
+        });
     }
+            
     
-    const entity_btn = $('<button>')
-        .text('Add entity')
-        .css({
-            position: 'fixed',
-            top:0,
-            right: 0
-        })
-        .click((e) => {
-            e.preventDefault()
-            createEntity({x:0,y:0})
-        })
-    $('body').append(entity_btn)
 }) //jQuery

@@ -43,13 +43,16 @@ io.on('connection', function(socket) {
     })
 
     socket.on('register player', (player) => {
-        engine.registerEntity(player.pos, player.velocity, player.id, player.type)
+        engine.registerEntity(player.pos, player.size, player.velocity, player.id, player.type)
     })
 
     socket.on('delete entity', (entity_id) => {
         engine.deleteEntity(entity_id);
     })
 
+    socket.on('resize world', (dimensions) => {
+        engine.resizeWorld(dimensions)
+    })
     
     intervalID = setInterval(
         () => {

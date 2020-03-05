@@ -17,15 +17,16 @@ module.exports =  function() {
         self.world.height = dimensions.height
     }
 
-    self.registerEntity = function(newPos, velocity, id, type) {
+    self.registerEntity = function(pos, size, velocity, id, type) {
         console.log('New entity registered of type', type)
         self.Entities[id] =
             {
                 id,
                 type,
-                pos: newPos,
-                lastPos: newPos,
+                pos,
+                lastPos: pos,
                 velocity,
+                size
             }
         
     }
@@ -47,13 +48,36 @@ module.exports =  function() {
                     self.Entities[key].pos.y += self.Entities[key].velocity.y * dt
         
                     //clamp
-                    if (self.Entities[key].pos.x > self.world.width || self.Entities[key].pos.x < 0) {
+                    if (self.Entities[key].pos.x > self.world.width - self.Entities[key].size.w || self.Entities[key].pos.x < 0) {
                         
                         self.Entities[key].velocity.x *= -1;
                     } 
-                    if (self.Entities[key].pos.y > self.world.height || self.Entities[key].pos.y < 0) {
+                    if (self.Entities[key].pos.y > self.world.height - self.Entities[key].size.h || self.Entities[key].pos.y < 0) {
                        
                         self.Entities[key].velocity.y *= -1;
+                    }
+
+                break;
+
+                case ENTITY_TYPES.CIRCLE:
+                    self.Entities[key].lastPos.x = self.Entities[key].pos.x
+                    self.Entities[key].lastPos.y = self.Entities[key].pos.y 
+                    self.Entities[key].pos.x += self.Entities[key].velocity.x * dt
+                    self.Entities[key].pos.y += self.Entities[key].velocity.y * dt
+        
+                    // wrap x
+                    if (self.Entities[key].pos.x > self.world.width) {
+                        self.Entities[key].pos.x = -self.Entities[key].size.w
+                    }
+                    if (self.Entities[key].pos.x < -self.Entities[key].size.w*2) {
+                        self.Entities[key].pos.x = self.world.width
+                    } 
+                    // wrap y
+                    if (self.Entities[key].pos.y > self.world.height) {
+                        self.Entities[key].pos.y = -self.Entities[key].size.h
+                    } 
+                    if (self.Entities[key].pos.y < -self.Entities[key].size.h*2) {
+                        self.Entities[key].pos.y = self.world.height
                     }
 
                 break;

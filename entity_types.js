@@ -1,8 +1,16 @@
 
 const ENTITY_TYPES = {
-        BOX: 0,
-        UI: 1,
-        TREE: 1
+        BOX:                    0,
+        CIRCLE:                 1,
+        TREE:                   3,
+
+        classNames: [
+                'box',
+                'circle',
+                'tree'
+        ]
 };
 
-module.exports = ENTITY_TYPES
+if (typeof window === 'undefined') {
+        module.exports = ENTITY_TYPES
+}
