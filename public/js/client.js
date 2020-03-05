@@ -16,7 +16,7 @@ $(function() {
 
     //init
     createUI()
-
+    $("body").css("overflow", "hidden")
 
     // resized window
     $( window ).resize(function() {
@@ -46,11 +46,14 @@ $(function() {
 
     createAndAddRenderable = function(id, type) {
         return $('<div>')
-        .attr('class', ENTITY_TYPES.classNames[type])
+        .attr('class', ENTITY_TYPES.classNames[type] )
         .attr('id', id)
         .appendTo('#canvas')
         .click((e) => {
             removeEntity(e.target.id)
+        })
+        .hover((e) => {
+            socket.emit('hovering entity', e.target.id)
         })
     }
 
@@ -125,12 +128,13 @@ $(function() {
 
     function draw() {
         $.each(entities, (i, entity) => {
-            const { type } = entity;
+           
 
             const $entity = $('div#'+entity.id)
             $entity.css({
                 left: entity.pos.x + 'px',
-                top: entity.pos.y + 'px'
+                top: entity.pos.y + 'px',
+                transform: `rotate(${entity.rotation}deg)`
             })
         })
     }

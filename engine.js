@@ -17,8 +17,7 @@ module.exports =  function() {
         self.world.height = dimensions.height
     }
 
-    self.registerEntity = function(pos, size, velocity, id, type) {
-        console.log('New entity registered of type', type)
+    self.addEntity = function(pos, size, velocity, id, type) {
         self.Entities[id] =
             {
                 id,
@@ -26,7 +25,9 @@ module.exports =  function() {
                 pos,
                 lastPos: pos,
                 velocity,
-                size
+                size,
+                rotating: false,
+                rotation: 0
             }
         
     }
@@ -35,6 +36,9 @@ module.exports =  function() {
         console.log('Deleted entity: ', id)
         delete self.Entities[id]
         self.entityCount--
+    }
+    self.handleHover = function(id) {
+        self.Entities[id].rotating = !self.Entities[id].rotating  
     }
 
     self.update = function(dt) {
@@ -55,6 +59,10 @@ module.exports =  function() {
                     if (self.Entities[key].pos.y > self.world.height - self.Entities[key].size.h || self.Entities[key].pos.y < 0) {
                        
                         self.Entities[key].velocity.y *= -1;
+                    }
+
+                    if(self.Entities[key].rotating) {
+                        self.Entities[key].rotation += 3 % 360
                     }
 
                 break;
