@@ -1,0 +1,15 @@
+{
+  "name": "game-engine",
+  "version": "1.0.0",
+  "description": "A simple JavaScript game engine",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "Sander Vermeer",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^2.3.0"
+  }
+}
