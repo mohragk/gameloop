@@ -4,7 +4,9 @@ function uuidv4() {
       (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
     );
   }
-
+function getRandomRange(min, max) {
+    return Math.random() * (max - min) + min;
+}
 
 $(function() {
     const socket = io();
@@ -30,13 +32,14 @@ $(function() {
     // make canvas clickable and create Box at mousePos
     $('#canvas').click(e => {
         e.preventDefault()
+        const size = getRandomRange(10, 80)
         createEntity(
         { //pos
             x:e.clientX,
             y:e.clientY
         },
         { //size
-            w: 50, h: 50
+            w: size, h: size
         },
         // type
         selectedType
@@ -48,6 +51,7 @@ $(function() {
         return $('<div>')
         .attr('class', ENTITY_TYPES.classNames[type] )
         .attr('id', id)
+
         .appendTo('#canvas')
         .click((e) => {
             removeEntity(e.target.id)
@@ -108,8 +112,8 @@ $(function() {
             pos,
             size,
             velocity: {
-                x: Math.random()*100,
-                y: Math.random()*100,
+                x: (2*Math.random() - 1)*400,
+                y: (2*Math.random() - 1)*400,
             },
         })
 
@@ -134,7 +138,10 @@ $(function() {
             $entity.css({
                 left: entity.pos.x + 'px',
                 top: entity.pos.y + 'px',
-                transform: `rotate(${entity.rotation}deg)`
+                transform: `rotate(${entity.rotation}deg)`,
+                width: entity.size.w+'px',
+                height: entity.size.h+'px',
+                borderRadius: entity.type === ENTITY_TYPES.CIRCLE ? (entity.size.w / 2)+'px' : '0px'
             })
         })
     }
