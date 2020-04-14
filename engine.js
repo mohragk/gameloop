@@ -73,6 +73,7 @@ module.exports =  function() {
                     if (self.Entities[key].pos.y < 0) self.Entities[key].pos.y = 0
                     if (self.Entities[key].pos.y > self.world.height) self.Entities[key].pos.y = self.world.height - self.Entities[key].size.h /2
 
+                    // rotate
                     if(self.Entities[key].rotating) {
                         self.Entities[key].rotation += 3 % 360
                     }
@@ -96,23 +97,6 @@ module.exports =  function() {
                     if (self.Entities[key].pos.y < 0) self.Entities[key].pos.y = 0
                     if (self.Entities[key].pos.y > self.world.height) self.Entities[key].pos.y = self.world.height - self.Entities[key].size.w 
 
-                    /*
-                    // wrap x
-                    if (self.Entities[key].pos.x > self.world.width) {
-                        self.Entities[key].pos.x = -self.Entities[key].size.w
-                    }
-                    if (self.Entities[key].pos.x < -self.Entities[key].size.w*2) {
-                        self.Entities[key].pos.x = self.world.width
-                    } 
-                    // wrap y
-                    if (self.Entities[key].pos.y > self.world.height) {
-                        self.Entities[key].pos.y = -self.Entities[key].size.h
-                    } 
-                    if (self.Entities[key].pos.y < -self.Entities[key].size.h*2) {
-                        self.Entities[key].pos.y = self.world.height
-                    }
-
-                    */
 
                 break;
             }
